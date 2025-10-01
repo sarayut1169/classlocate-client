@@ -23,7 +23,9 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useNuxtApp } from '#app'
 const { $auth } = useNuxtApp()
-
+// import { useCookie } from 'nuxt/app'
+// const token = useCookie('access_token')
+// token.value = result.resultData.accessToken
 const email = ref('')
 const password = ref('')
 const router = useRouter()
@@ -57,7 +59,7 @@ const login = async () => {
   if (result?.resultData?.accessToken) {
     if(result.resultData.role == 2){
     //$auth.setToken(result.resultData.accessToken)
-    await navigateTo('/Teacher/teacherHomePage')
+    await navigateTo('/teacher/teacherData')
     }
     if(result.resultData.role == 3){
     $auth.setToken(result.resultData.accessToken)
