@@ -19,8 +19,12 @@
                   <td>{{ subjectData.resultData.subjectCode }}</td>
                 </tr>
                 <tr>
-                  <th scope="row">ตำแหน่ง</th>
-                  <td>{{ subjectData.resultData.location }}</td>
+                  <th scope="row" class="col-3">ตำแหน่ง</th>
+                  <td>
+                    <div v-for="(part, i) in subjectData.resultData.location.split(',')" :key="i">
+                      {{ part.trim() }}
+                    </div>
+                  </td>
                 </tr>
               </tbody>
             </table>
@@ -37,21 +41,38 @@
 
 <script setup>
 import Sidebar from '../components/Sidebar.vue'
-import { useRoute } from 'vue-router'
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 
-const route = useRoute()
+const subjectId = sessionStorage.getItem('subjectId')
+const accessToken = localStorage.getItem('accessToken') // ถ้ามีการใช้ token
 const subjectData = ref(null)
 
-const raw = route.query.subjectData
+console.log('Subject ID:', subjectId)
 
-try {
-  subjectData.value = raw ? JSON.parse(decodeURIComponent(raw)) : null
-  console.log('subjectData:', subjectData.value)
-} catch (error) {
-  console.error('ไม่สามารถแปลงข้อมูล subjectData ได้:', error)
-  subjectData.value = null
-}
+onMounted(async () => {
+  if (!subjectId || !accessToken) return
+
+  try {
+    const response = await fetch('/api/subject/subjectById/', {
+      method: 'POST',
+      headers: {
+        accept: '*/*',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ id: subjectId, accessToken }),
+    })
+
+    if (!response.ok) {
+      throw new Error(`API error: ${response.status}`)
+    }
+
+    subjectData.value = await response.json()
+    console.log('Subject data:', subjectData.value)
+  } catch (error) {
+    console.error('โหลดข้อมูลวิชาไม่สำเร็จ:', error)
+    subjectData.value = null
+  }
+})
 </script>
 
 <style>
