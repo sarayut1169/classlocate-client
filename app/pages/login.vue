@@ -45,21 +45,15 @@ const login = async () => {
     })
 
     const result = await response.json()
-    console.log("RESULT:",result)
-    // if (result.resultData != null) {
-    //   // $toast.success(result.message || 'เข้าสู่ระบบสำเร็จ')
-    //   $auth.setToken(result.resultData:accessToken)
-      
-    //   await navigateTo('/')
-    // } else {
-    //   // $toast.error(result.message || 'เข้าสู่ระบบไม่สำเร็จ')
-    //   errorMessage.value = result.message || 'เข้าสู่ระบบไม่สำเร็จ'
-    //   await navigateTo('/login')
-    // }
+
   if (result?.resultData?.accessToken) {
     if(result.resultData.role == 2){
     //$auth.setToken(result.resultData.accessToken)
-    await navigateTo('/teacher/teacherData')
+    await navigateTo('/teacher/teahcerHomepage')
+    // localStorage.setItem('accessToken', result.resultData.accessToken)
+    localStorage.setItem('userId',result.resultData.id)
+    localStorage.setItem('teacherId',result.resultData.teacherId)
+    localStorage.setItem('accessToken',result.resultData.accessToken)
     }
     if(result.resultData.role == 3){
     $auth.setToken(result.resultData.accessToken)

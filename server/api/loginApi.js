@@ -7,10 +7,6 @@ export default defineEventHandler(async (event) => {
 
     const { email, password } = requestBody || {}
 
-    console.log("Method:", method)
-    console.log("Received email:", email)
-    console.log("Received password:", password)
-
     if (!email || !password) {
       throw createError({
         statusCode: 400,
@@ -26,6 +22,8 @@ export default defineEventHandler(async (event) => {
         'accept': '*/*',
         'content-type': 'application/json',
       },
+      credentials: 'include', // ✅ สำคัญมาก
+
       body: JSON.stringify({ email, password }),
     })
 
@@ -36,9 +34,7 @@ export default defineEventHandler(async (event) => {
       })
     }
     else {
-      console.log("Login successful")
       const result = await response.json()
-      console.log("Result:", result)
       return {
         resultData: result.resultData
       }
