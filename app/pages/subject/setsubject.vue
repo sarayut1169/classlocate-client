@@ -76,14 +76,24 @@
 
     <!-- วันที่เรียน -->
     <div class="flex-grow p-6">
+
+
       <div class="container mt-5">
         <div class="card shadow-lg rounded-4 bg-white bg-opacity-80 border border-gray-300 p-4">
+          
           <h4 class="mb-4 text-center text-primary fw-bold">วันที่เรียน</h4>
 
           <div class="table-responsive">
+          <button
+          class="btn btn-success rounded-pill shadow-sm px-4"
+            @click="createSubjectInfo"
+          >
+            + สร้างวิชาใหม่
+          </button>
             <table class="table table-bordered table-striped table-hover align-middle">
               <thead class="table-info text-center">
                 <tr>
+                  <th scope="col">วัน</th>
                   <th scope="col">เวลาเริ่มเรียน</th>
                   <th scope="col">เวลาสิ้นสุดเรียน</th>
                   <th scope="col">เวลาเริ่มเช็คชื่อ</th>
@@ -97,13 +107,16 @@
                   :key="index"
                   class="text-center"
                 >
+                  <td>{{ item.day }}</td>
                   <td>{{ item.leranStartTime }}</td>
                   <td>{{ item.leranEndTime }}</td>
                   <td>{{ item.startCheckIn }}</td>
                   <td>{{ item.endCheckIn }}</td>
                   <td>
                     <button v-if="!isEditingSubjectInfo" @click="editSubjectInfo(item)" class="btn btn-warning">แก้ไข</button>
+                    <button class="btn btn-danger" @click="deleteSubjectInfo({ id:item.id })">ลบวันที่เรียน</button>
                   </td>
+                  
                 </tr>
               </tbody>
             </table>
@@ -111,6 +124,20 @@
 
           <div v-if="isEditingSubjectInfo">
             <form @submit.prevent="saveSubjectInfoChanges">
+              <div class="mb-3">
+                <label class="form-label">วัน</label>
+                <select v-model="editSubjectInfoData.day" class="form-select" required>
+                  <option disabled value="">-- กรุณาเลือกวัน --</option>
+                  <option value="1" >วันจันทร์</option>
+                  <option value="2">วันอังคาร</option>
+                  <option value="3">วันพุธ</option>
+                  <option value="4">วันพฤหัสบดี</option>
+                  <option value="5">วันศุกร์</option>
+                  <option value="6">วันเสาร์</option>
+                  <option value="7">วันอาทิตย์</option>
+                </select>
+              </div>
+
               <div class="mb-3">
                 <label class="form-label">เวลาเริ่มเรียน</label>
                 <input v-model="editSubjectInfoData.leranStartTime" class="form-control" required />
@@ -169,6 +196,7 @@ const editData = ref({
 
 const editSubjectInfoData = ref({
   id: '',
+  day: '',
   leranStartTime: '',
   leranEndTime: '',
   startCheckIn: '',
@@ -229,6 +257,46 @@ async function loadSubjectInfo() {
   }
 }
 
+async function deleteSubjectInfo({ id }) {
+  console.log('ID:', id);
+
+  const accessToken = localStorage.getItem('accessToken');
+  if (!id || !accessToken) {
+    alert('ไม่พบข้อมูลที่จำเป็นสำหรับการลบ');
+    return;
+  }
+
+  const shouldDelete = window.confirm('คุณต้องการลบวิชานี้?');
+  if (!shouldDelete) return;
+
+  try {
+    const response = await fetch('/api/subject/subjectInfoDelete/', {
+      method: 'POST',
+      headers: {
+        accept: '*/*',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ id: Number(id), accessToken }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`ลบไม่สำเร็จ: ${response.status}`);
+    }
+
+    const result = await response.json();
+    console.log('DELETE RESULT:', result);
+
+    alert('✅ ลบวิชาเรียบร้อยแล้ว');
+
+    // ลบจาก state โดยไม่ reload
+    subjectInfo.value = subjectInfo.value.filter(item => item.id !== id);
+  } catch (error) {
+    console.error('เกิดข้อผิดพลาดในการลบวิชา:', error);
+    alert('❌ ลบวิชาไม่สำเร็จ กรุณาลองใหม่อีกครั้ง');
+  }
+}
+
+
 // แก้ไขรายละเอียดวิชา
 function enableEditSubject() {
   if (!subjectData.value?.resultData) return
@@ -278,12 +346,18 @@ function cancelSubjectInfoEdit() {
   isEditingSubjectInfo.value = false
 }
 
+function createSubjectInfo() {
+
+  navigateTo('/subject/createSubjectInfo')
+}
+
 async function saveSubjectInfoChanges() {
   try {
     const url = '/api/subject/subjectInfoUpdate/'
     const body = {
       id: editSubjectInfoData.value.id,
       accessToken: accessToken.value,
+      day: editSubjectInfoData.value.day,
       leranStartTime: editSubjectInfoData.value.leranStartTime,
       leranEndTime: editSubjectInfoData.value.leranEndTime,
       startCheckIn: editSubjectInfoData.value.startCheckIn,

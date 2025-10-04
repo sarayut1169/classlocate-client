@@ -38,13 +38,11 @@
         </div>
       </div>
       <div>
+        <NuxtLink to="/class/class" class="nav-menu-item">ห้องเรียน</NuxtLink>
         <NuxtLink to="/teacher/teacherData" class="nav-menu-item">ข้อมูลอาจารย์</NuxtLink>
         <NuxtLink to="/subject/subject" class="nav-menu-item">วิชา</NuxtLink>
-        <a href="#" class="nav-menu-item"><i class="fas fa-search me-3"></i>Explore</a>
-        <a href="#" class="nav-menu-item"><i class="fas fa-wrench me-3"></i>Services</a>
-        <a href="#" class="nav-menu-item"><i class="fas fa-dollar-sign me-3"></i>Pricing</a>
-        <a href="#" class="nav-menu-item"><i class="fas fa-file-alt me-3"></i>Blog</a>
-        <a href="#" class="nav-menu-item"><i class="fas fa-building me-3"></i>About Us</a>
+   
+
       </div>
     </div>
   </div>

@@ -49,7 +49,7 @@ const login = async () => {
   if (result?.resultData?.accessToken) {
     if(result.resultData.role == 2){
     //$auth.setToken(result.resultData.accessToken)
-    await navigateTo('/teacher/teahcerHomepage')
+    await navigateTo('/class/class')
     // localStorage.setItem('accessToken', result.resultData.accessToken)
     localStorage.setItem('userId',result.resultData.id)
     localStorage.setItem('teacherId',result.resultData.teacherId)

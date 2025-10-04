@@ -10,12 +10,6 @@
 
     </div>
       <div class="container mt-5">
-       <button
-        class="btn btn-success rounded-pill shadow-sm px-4"
-        @click="createSubject"
-      >
-        + สร้างวิชาใหม่
-      </button>
         <div class="card shadow-lg rounded-4 bg-white bg-opacity-80 border border-primary p-4">
           <h4 class="mb-4 text-center text-primary fw-bold">รายวิชาที่รับผิดชอบ</h4>
 
@@ -43,13 +37,7 @@
                       class="btn btn-sm btn-warning rounded-pill shadow-sm px-3"
                       @click="viewSubject({ subjectId: item.id })"
                     >
-                      ดูข้อมูล
-                    </button>
-                    <button
-                      class="btn btn-sm btn-danger rounded-pill shadow-sm px-3"
-                      @click="deleteSubject({ subjectId: item.id })"
-                    >
-                      ลบวิชา
+                      เข้าห้องเรียน
                     </button>
                   </td>
                 </tr>
@@ -109,41 +97,8 @@ function viewSubject({ subjectId }) {
   sessionStorage.setItem('subjectId', subjectId)
 
   // ไปหน้า setsubject โดยไม่ส่ง query
-  navigateTo('/subject/setsubject')
+  navigateTo('/class/classinfo')
 }
-
-async function deleteSubject({ subjectId }) {
-  // เก็บค่าลง sessionStorage (ถ้าใช้ต่อ)
-  const accessToken = localStorage.getItem('accessToken')
-  const accept = window.confirm('คุณต้องการลบวิชานี้?')
-  if (!accept) return
-
-  try {
-    const response = await fetch('/api/subject/subjectDelete/', {
-      method: 'POST',
-      headers: {
-        accept: '*/*',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ subjectId, accessToken }),
-    })
-
-    if (!response.ok) {
-      throw new Error(`ลบไม่สำเร็จ: ${response.status}`)
-    }
-
-    const result = await response.json()
-    console.log('DELETE RESULT:', result)
-
-    alert('✅ ลบวิชาเรียบร้อยแล้ว')
-  } catch (error) {
-    console.error('เกิดข้อผิดพลาดในการลบวิชา:', error)
-    alert('❌ ลบวิชาไม่สำเร็จ กรุณาลองใหม่อีกครั้ง')
-  }
-
-  location.reload()
-}
-
 function createSubject() {
   // ไปหน้า setsubject โดยไม่ส่ง subjectId
   sessionStorage.removeItem('subjectId') // ล้างค่าเก่า ถ้ามี
