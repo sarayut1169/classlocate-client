@@ -31,7 +31,7 @@
                   <td>{{ item.startCheckIn }}</td>
                   <td>{{ item.endCheckIn }}</td>
                   <td>
-                    <button v-if="!isEditingSubjectInfo" @click="editSubjectInfo(item)" class="btn btn-warning">การเข้าเรียน</button>
+                    <NuxtLink to="/class/classdata" class="btn btn-warning">การเข้าเรียน</NuxtLink>
                   </td>
                 </tr>
               </tbody>
@@ -92,9 +92,9 @@ async function loadSubjectInfo() {
 }
 
 
-function editSubjectInfo(item) {
-  // implement edit subject info logic here
-}
+// function goToSeeData() {
+//   router.push('/class/classdata')
+// }
 
 </script>
 
