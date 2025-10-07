@@ -31,7 +31,14 @@
                   <td>{{ item.startCheckIn }}</td>
                   <td>{{ item.endCheckIn }}</td>
                   <td>
-                    <NuxtLink to="/class/classdata" class="btn btn-warning">การเข้าเรียน</NuxtLink>
+                      <!-- <button class="btn btn-sm btn-warning rounded-pill shadow-sm px-3" @click="goToSeeData({ id: item.id })" >แสดงการเข้าห้องเรียน</button> -->
+                      <NuxtLink
+                        :to="{ path: '/class/classdata' }"
+                        class="btn btn-sm btn-warning rounded-pill shadow-sm px-3"
+                        @click.native="sessionStorage.setItem('subjectInfoId', item.id)"
+                      >
+                        แสดงการเข้าห้องเรียน
+                      </NuxtLink>
                   </td>
                 </tr>
               </tbody>
@@ -92,7 +99,8 @@ async function loadSubjectInfo() {
 }
 
 
-// function goToSeeData() {
+// function goToSeeData({id}) {
+//   sessionStorage.setItem('subjectInfoId', id)
 //   router.push('/class/classdata')
 // }
 

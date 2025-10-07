@@ -7,7 +7,9 @@
       <div class="container mt-5">
         <div class="card shadow-lg rounded-4 bg-white bg-opacity-80 border border-gray-300 p-4">
           <h4 class="mb-4 text-center text-primary fw-bold">สถานะการเข้าเรียน</h4>
-
+          <div v-if="errorMessage" class="alert alert-danger text-center fw-bold mb-4">
+            {{ errorMessage }}
+          </div>
           <div class="table-responsive">
 
             <table class="table table-bordered table-striped table-hover align-middle">
@@ -49,14 +51,19 @@
 import { ref, onMounted } from 'vue'
 import Sidebar from '../components/Sidebar.vue'
 
-const subjectId = ref(null)
+const subjectInfoId = ref(null)
 const accessToken = ref(null)
 const classData = ref(null)
+const errorMessage = ref(null) // ✅ เพิ่มตัวแปรสำหรับ error message
+
 onMounted(async () => {
-  subjectId.value = sessionStorage.getItem('subjectId')
+  subjectInfoId.value = sessionStorage.getItem('subjectInfoId')
   accessToken.value = localStorage.getItem('accessToken')
 
-  if (!subjectId.value || !accessToken.value) return
+  if (!subjectInfoId.value || !accessToken.value) {
+    errorMessage.value = 'ไม่พบข้อมูลวิชา หรือ access token'
+    return
+  }
 
   await loadSubjectInfo()
 })
@@ -69,19 +76,31 @@ async function loadSubjectInfo() {
         accept: '*/*',
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ subjectId: subjectId.value, accessToken: accessToken.value }),
+      body: JSON.stringify({
+        subjectInfoId: subjectInfoId.value,
+        accessToken: accessToken.value,
+      }),
     })
 
     if (!response.ok) throw new Error(`API error: ${response.status}`)
 
     const data = await response.json()
+
+    console.log("DATAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",data);
+    
+
+    if (data.isSuccess === false) {
+      throw new Error(data.errorMessages || 'เกิดข้อผิดพลาดจาก API')
+    }
+
     classData.value = data.resultData
+    errorMessage.value = null // ✅ ล้าง error ถ้าโหลดสำเร็จ
   } catch (error) {
     console.error('โหลดข้อมูลไม่สำเร็จ:', error)
     classData.value = null
+    errorMessage.value = error.message || 'ไม่สามารถโหลดข้อมูลได้'
   }
 }
-
 </script>
 
 <style>
