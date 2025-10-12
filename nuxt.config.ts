@@ -4,5 +4,7 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   css: ['bootstrap/dist/css/bootstrap.min.css'],
   plugins: [{ src: '../plugins/bootstrap.client.ts', mode: 'client' }],
-
+  alias: {
+    "assets": "/<rootDir>/assets",
+  }
 })

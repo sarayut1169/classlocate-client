@@ -60,6 +60,9 @@ onMounted(async () => {
   subjectInfoId.value = sessionStorage.getItem('subjectInfoId')
   accessToken.value = localStorage.getItem('accessToken')
 
+  console.log("subjectInfoId:", subjectInfoId.value);
+  
+
   if (!subjectInfoId.value || !accessToken.value) {
     errorMessage.value = 'ไม่พบข้อมูลวิชา หรือ access token'
     return
