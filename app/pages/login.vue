@@ -56,8 +56,11 @@ const login = async () => {
     localStorage.setItem('accessToken',result.resultData.accessToken)
     }
     if(result.resultData.role == 3){
-    $auth.setToken(result.resultData.accessToken)
-    await navigateTo('/')
+    // $auth.setToken(result.resultData.accessToken)
+    localStorage.setItem('accessToken',result.resultData.accessToken)
+    localStorage.setItem('userId',result.resultData.id)
+    localStorage.setItem('studentId',result.resultData.studentId)
+    await navigateTo('/student/studenthomepage')
     }
 
   } else {
