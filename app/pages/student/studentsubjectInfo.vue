@@ -68,7 +68,7 @@
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 
-import Sidebar from '../components/Sidebar.vue'
+import Sidebar from '../components/StudentSidebar.vue'
 
 const router = useRouter()
 const subjectId = ref(null)

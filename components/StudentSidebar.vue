@@ -38,9 +38,7 @@
         </div>
       </div>
       <div>
-        <NuxtLink to="/class/class" class="nav-menu-item">ห้องเรียน</NuxtLink>
-        <NuxtLink to="/teacher/teacherData" class="nav-menu-item">ข้อมูลอาจารย์</NuxtLink>
-        <NuxtLink to="/subject/subject" class="nav-menu-item">วิชา</NuxtLink>
+        <NuxtLink to="/student/studenthomepage" class="nav-menu-item">ห้องเรียน</NuxtLink>
    
 
       </div>

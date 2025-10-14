@@ -11,7 +11,7 @@
     </div>
       <div class="container mt-5">
         <div class="card shadow-lg rounded-4 bg-white bg-opacity-80 border border-primary p-4">
-          <h4 class="mb-4 text-center text-primary fw-bold">รายวิชาที่รับผิดชอบ</h4>
+          <h4 class="mb-4 text-center text-primary fw-bold">รายวิชาที่เรียน</h4>
 
           <div class="table-responsive">
             <table class="table table-bordered table-hover align-middle">
@@ -71,7 +71,7 @@
 
 <script setup>
 import { ref } from 'vue'
-import Sidebar from '../components/Sidebar.vue'
+import Sidebar from '../components/StudentSidebar.vue'
 
 const data = ref(null)
 
