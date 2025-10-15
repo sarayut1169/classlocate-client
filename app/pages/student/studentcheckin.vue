@@ -20,7 +20,16 @@
               <!-- Error Message -->
               <div v-if="errorMessages" class="alert alert-danger text-center fw-bold" role="alert">
                 {{ errorMessages }}
+                <br>
+                <button
+                  v-if="!shouldHideCheckInButton"
+                  class="btn btn-primary btn-lg px-4"
+                  @click="checkIn"
+                >
+                  เช็คอินตอนนี้
+                </button>
               </div>
+
 
               <!-- Already Checked In -->
               <div v-else-if="data">
@@ -46,11 +55,6 @@
               </div>
 
               <!-- Check-In Button -->
-              <div v-else class="text-center mt-4">
-                <button class="btn btn-primary btn-lg px-4" @click="checkIn">
-                  เช็คอินตอนนี้
-                </button>
-              </div>
             </div>
           </div>
         </div>
@@ -66,6 +70,7 @@ import Sidebar from '../components/StudentSidebar.vue'
 const currentTime = ref('')
 const data = ref(null)
 const errorMessages = ref(null)
+const shouldHideCheckInButton = ref(false)
 
 // แปลง ISO string เป็นเวลาแบบ HH:mm:ss
 function formatTime(isoString) {
@@ -104,11 +109,18 @@ async function getCheckInData() {
   })
 
   const result = await response.json()
-  if (result.errorMessages) {
-    errorMessages.value = result.errorMessages
-  } else {
-    data.value = result.resultData
-  }
+    if (result.errorMessages) {
+      errorMessages.value = result.errorMessages
+    if (
+      errorMessages.value === 'ไม่สามารถเช็คอินได้ ยังไม่ถึงวันที่เรียน' ||
+      errorMessages.value === 'ไม่สามารถเช็คอินได้ เวลาไม่ถูกต้อง' ||
+      errorMessages.value === 'ไม่สามารถเช็คอินได้ คุณขาดเรียน เนื่องจากไม่ได้เข้าเรียนตามเวลาที่กำหนด'
+    ) {
+    shouldHideCheckInButton.value = true
+    }
+    } else {
+      data.value = result.resultData
+    }
 }
 
 // เช็คอิน
@@ -118,6 +130,7 @@ async function checkIn() {
   const subjectInfoId = sessionStorage.getItem('subjectInfoId')
 
   // ดึงตำแหน่งจาก browser
+  if(navigator.geolocation){
   navigator.geolocation.getCurrentPosition(async (position) => {
     const latitude = position.coords.latitude
     const longitude = position.coords.longitude
@@ -143,11 +156,13 @@ async function checkIn() {
       errorMessages.value = result.errorMessages
     } else {
       data.value = result.resultData
+      await getCheckInData()
     }
   }, (error) => {
     errorMessages.value = 'ไม่สามารถดึงตำแหน่งจากอุปกรณ์ได้'
     console.error('Geolocation error:', error)
   })
+  }
 }
 
 onMounted(() => {
