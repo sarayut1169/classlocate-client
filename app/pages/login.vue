@@ -2,18 +2,43 @@
   <div class="login-container">
     <div class="login-card">
       <h2>🔐 เข้าสู่ระบบ Class Locate</h2>
+
       <form @submit.prevent="login">
         <div class="input-group">
           <label for="email">📧 Email</label>
-          <input type="email" id="email" v-model="email" required />
+          <input
+            type="email"
+            id="email"
+            v-model="email"
+            required
+            placeholder="กรอกอีเมลของคุณ"
+          />
         </div>
+
         <div class="input-group">
-          <label for="password">🔒 Password</label>
-          <input type="password" id="password" v-model="password" required />
+          <label for="password">🔒 รหัสผ่าน</label>
+          <input
+            type="password"
+            id="password"
+            v-model="password"
+            required
+            placeholder="กรอกรหัสผ่านของคุณ"
+          />
         </div>
-        <button type="submit">เข้าสู่ระบบ</button>
+
+        <button type="submit" class="login-button">เข้าสู่ระบบ</button>
       </form>
+
       <p v-if="errorMessage" class="error-text">{{ errorMessage }}</p>
+
+      <div class="register-buttons">
+        <router-link to="/registerstudent" class="btn-outline">
+          สมัครสมาชิก (นักศึกษา)
+        </router-link>
+        <router-link to="/registerteacher" class="btn-outline">
+          สมัครสมาชิก (อาจารย์)
+        </router-link>
+      </div>
     </div>
   </div>
 </template>
@@ -21,21 +46,17 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { useNuxtApp } from '#app'
-const { $auth } = useNuxtApp()
-// import { useCookie } from 'nuxt/app'
-// const token = useCookie('access_token')
-// token.value = result.resultData.accessToken
 const email = ref('')
 const password = ref('')
-const router = useRouter()
 const errorMessage = ref('')
+const router = useRouter()
+
 const login = async () => {
-  
+  try {
     const response = await fetch('/api/loginApi', {
       method: 'POST',
       headers: {
-        'accept': '*/*',
+        accept: '*/*',
         'content-type': 'application/json',
       },
       body: JSON.stringify({
@@ -46,30 +67,24 @@ const login = async () => {
 
     const result = await response.json()
 
-  if (result?.resultData?.accessToken) {
-    if(result.resultData.role == 2){
-    //$auth.setToken(result.resultData.accessToken)
-    await navigateTo('/class/class')
-    // localStorage.setItem('accessToken', result.resultData.accessToken)
-    localStorage.setItem('userId',result.resultData.id)
-    localStorage.setItem('teacherId',result.resultData.teacherId)
-    localStorage.setItem('accessToken',result.resultData.accessToken)
-    }
-    if(result.resultData.role == 3){
-    // $auth.setToken(result.resultData.accessToken)
-    localStorage.setItem('accessToken',result.resultData.accessToken)
-    localStorage.setItem('userId',result.resultData.id)
-    localStorage.setItem('studentId',result.resultData.studentId)
-    await navigateTo('/student/studenthomepage')
-    }
+    if (result?.resultData?.accessToken) {
+      const data = result.resultData
+      localStorage.setItem('accessToken', data.accessToken)
+      localStorage.setItem('userId', data.id)
 
-  } else {
-    errorMessage.value = result.message || 'เข้าสู่ระบบไม่สำเร็จ'
-    await navigateTo('/login')
+      if (data.role === 2) {
+        localStorage.setItem('teacherId', data.teacherId)
+        await router.push('/class/class')
+      } else if (data.role === 3) {
+        localStorage.setItem('studentId', data.studentId)
+        await router.push('/student/studenthomepage')
+      }
+    } else {
+      errorMessage.value = result.message || 'เข้าสู่ระบบไม่สำเร็จ'
+    }
+  } catch (error) {
+    errorMessage.value = 'เกิดข้อผิดพลาดในการเชื่อมต่อ'
   }
-
-
-    
 }
 </script>
 
@@ -79,17 +94,19 @@ const login = async () => {
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background: linear-gradient(135deg, #1e3c72, #f76b1c); /* น้ำเงิน → ส้ม */
+  padding: 20px;
+  background: linear-gradient(135deg, #1e3c72, #f76b1c);
+  font-family: 'Prompt', sans-serif;
 }
 
 .login-card {
   background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(12px);
-  border-radius: 16px;
+  backdrop-filter: blur(15px);
+  border-radius: 20px;
   padding: 40px;
   width: 100%;
-  max-width: 400px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  max-width: 420px;
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.2);
   color: #fff;
   text-align: center;
 }
@@ -98,7 +115,6 @@ const login = async () => {
   margin-bottom: 30px;
   font-weight: 600;
   font-size: 24px;
-  color: #ffffff;
 }
 
 .input-group {
@@ -110,36 +126,71 @@ const login = async () => {
   display: block;
   margin-bottom: 8px;
   font-weight: 500;
-  color: #ffffff;
 }
 
 .input-group input {
   width: 100%;
-  padding: 12px;
-  border-radius: 8px;
+  padding: 12px 15px;
+  border-radius: 10px;
   border: none;
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.15);
   color: #fff;
   font-size: 16px;
+  outline: none;
 }
 
 .input-group input::placeholder {
   color: #ddd;
 }
 
-button[type="submit"] {
+.login-button {
   width: 100%;
   padding: 12px;
+  margin-top: 10px;
+  background-color: #f76b1c;
   border: none;
-  border-radius: 8px;
-  background-color: #f76b1c; /* ส้ม */
+  border-radius: 10px;
   color: white;
   font-size: 16px;
+  font-weight: 600;
   cursor: pointer;
   transition: background 0.3s ease;
 }
 
-button[type="submit"]:hover {
+.login-button:hover {
   background-color: #ff8c42;
+}
+
+.error-text {
+  color: #ffb3b3;
+  margin-top: 15px;
+  font-weight: 500;
+}
+
+.register-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 30px;
+}
+
+.btn-outline {
+  display: block;
+  width: 100%;
+  padding: 12px;
+  text-align: center;
+  background: transparent;
+  border: 2px solid #fff;
+  color: #fff;
+  border-radius: 10px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.btn-outline:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+  border-color: #ffcc99;
+  color: #ffcc99;
 }
 </style>

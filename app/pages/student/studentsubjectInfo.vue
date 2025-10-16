@@ -32,6 +32,8 @@
                   <td>{{ item.endCheckIn }}</td>
                   <td>
                       <button class="btn btn-sm btn-warning rounded-pill shadow-sm px-3" @click="checin({ id: item.id })" >เช็คอิน</button>
+                      <button class="btn btn-sm btn-success rounded-pill shadow-sm px-3" @click="leave({ id: item.id })">ลา</button>
+
                       <!-- <NuxtLink
                         :to="{ path: '/class/classdata' }"
                         class="btn btn-sm btn-warning rounded-pill shadow-sm px-3"
@@ -123,6 +125,12 @@ function checin({id}) {
   sessionStorage.setItem('subjectInfoId', id)
   // navigateTo('/class/classdata')
   router.push('/student/studentcheckin')
+}
+
+function leave({id}) {
+  sessionStorage.setItem('subjectInfoId', id)
+  // navigateTo('/class/classdata')
+  router.push('/student/createleave')
 }
 
 </script>
