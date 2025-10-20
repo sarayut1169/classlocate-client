@@ -1,7 +1,7 @@
 // api/class/checkin.ts
 export default defineEventHandler(async (event) => {
   const body = await readBody(event)
-//   console.log("BODYDATA CHECK AUTH:", body)
+  console.log("BODYDATA CHECK AUTH:", body)
 
 
   const {accessToken } = body

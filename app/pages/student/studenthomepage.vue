@@ -72,10 +72,10 @@
 <script setup>
 import { ref } from 'vue'
 import Sidebar from '../components/StudentSidebar.vue'
-
-definePageMeta({
-  middleware: ['auth']
-})
+import { $fetch } from 'ofetch'
+// definePageMeta({
+//   middleware: ['auth']
+// })
 
 
 
@@ -88,7 +88,7 @@ async function fetchTeacherData() {
   if (!studentId) return
 
   try {
-    const response = await fetch('/api/subject/subjectByStudentId/', {
+    const response = await $fetch('/api/subject/subjectByStudentId/', {
       method: 'POST',
       headers: {
         accept: '*/*',

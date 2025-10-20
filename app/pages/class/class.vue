@@ -61,7 +61,9 @@
 <script setup>
 import { ref } from 'vue'
 import Sidebar from '../components/Sidebar.vue'
-
+definePageMeta({
+  middleware: ['auth']
+})
 const data = ref(null)
 
 async function fetchTeacherData() {

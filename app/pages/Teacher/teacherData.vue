@@ -124,7 +124,9 @@ async function saveEdit() {
 }
 
 definePageMeta({
-  layout: 'teacherlayout'
+  layout: 'teacher',
+  middleware: ['auth'],
+  title: 'ข้อมูลครู'
 })
 </script>
 
