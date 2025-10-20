@@ -35,6 +35,13 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import Sidebar from '../components/Sidebar.vue'
 
+definePageMeta({
+  middleware: ['auth']
+})
+
+
+
+
 const leaveData = ref({
   leaveDay: '',
   description: '',

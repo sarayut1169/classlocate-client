@@ -69,6 +69,11 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+definePageMeta({
+  middleware: ['auth']
+})
+
+
 
 import Sidebar from '../components/StudentSidebar.vue'
 

@@ -67,6 +67,12 @@
 import { ref, onMounted } from 'vue'
 import Sidebar from '../components/StudentSidebar.vue'
 
+definePageMeta({
+  middleware: ['auth']
+})
+
+
+
 const currentTime = ref('')
 const data = ref(null)
 const errorMessages = ref(null)
