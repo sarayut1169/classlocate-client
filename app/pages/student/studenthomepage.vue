@@ -72,10 +72,10 @@
 <script setup>
 import { ref } from 'vue'
 import Sidebar from '../components/StudentSidebar.vue'
-import { $fetch } from 'ofetch'
-// definePageMeta({
-//   middleware: ['auth']
-// })
+
+definePageMeta({
+  middleware: ['auth']
+})
 
 
 
@@ -88,7 +88,7 @@ async function fetchTeacherData() {
   if (!studentId) return
 
   try {
-    const response = await $fetch('/api/subject/subjectByStudentId/', {
+    const response = await fetch('/api/subject/subjectByStudentId/', {
       method: 'POST',
       headers: {
         accept: '*/*',
@@ -97,10 +97,9 @@ async function fetchTeacherData() {
       body: JSON.stringify({ studentId, accessToken }),
     })
 
-    if (!response.ok) {
-      const error = new Error(`API error: ${response.status}`)
-      console.error('Failed to fetch teacher data:', error)
-      throw error
+    if(response.status === 401) {
+      localStorage.removeItem('accessToken')
+      navigateTo('/login')
     }
 
     data.value = await response.json()

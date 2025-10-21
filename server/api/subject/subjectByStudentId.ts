@@ -21,8 +21,8 @@ export default defineEventHandler(async (event) => {
     credentials: 'include',
   })
 
-  const data = await response.json()
-  console.log("DATA:",data);
+  // const data = await response.json()
+  // console.log("DATA:",data);
   
-  return data
+  return response
 })
