@@ -35,13 +35,6 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import Sidebar from '../components/Sidebar.vue'
 
-definePageMeta({
-  middleware: ['auth']
-})
-
-
-
-
 const leaveData = ref({
   leaveDay: '',
   description: '',
@@ -75,7 +68,11 @@ async function saveLeave() {
         description:"วันที่ลา:"+leaveData.value.leaveDay+"  หมายเหตุ:"+leaveData.value.description
       }),
     })
-
+    if (response.status === 401) {
+      localStorage.removeItem('accessToken')
+      router.push('/login')
+      return
+    }
     const result = await response.json()
     if (result.errorMessages) {
       alert(result.errorMessages)

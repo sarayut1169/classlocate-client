@@ -10,7 +10,7 @@ export default defineEventHandler(async (event) => {
     return { error: 'Missing userId or accessToken' }
   }
 
-  const url = `https://localhost:7021/api/studentdata/get-checkin/${subjectInfoId}`
+  const url = `https://localhost:7021/api/checkin/get-checkin/${subjectInfoId}`
 
   const response = await fetch(url, {
     method: 'GET',
@@ -21,8 +21,6 @@ export default defineEventHandler(async (event) => {
     credentials: 'include',
   })
 
-  const data = await response.json()
-  console.log("DATA:",data);
   
-  return data
+  return response
 })

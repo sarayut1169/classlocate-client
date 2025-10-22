@@ -93,7 +93,11 @@ async function handleSaveNewStudent() {
         ...newStudent.value,
       }),
     })
-
+    if (response.status === 401) {
+      localStorage.removeItem('accessToken')
+      router.push('/login')
+      return
+    }
     if (!response.ok) {
       const errorResponse = await response.json()
       throw new Error(errorResponse?.message || 'บันทึกข้อมูลไม่สําเร็จ')
@@ -108,7 +112,6 @@ async function handleSaveNewStudent() {
 function handleCancelCreate() {
   router.push('/class/classinfo')
 }
-
 
       const handleFileChange = (e) => {
         file.value = e.target.files[0]
@@ -139,7 +142,11 @@ const handleUploadFile = async () => {
       },
       body: JSON.stringify({ subjectId: subjectId,excelFile: file, accessToken: accessToken.value }),
     })
-
+    if (response.status === 401) {
+      localStorage.removeItem('accessToken')
+      router.push('/login')
+      return
+    }
     if (!response.ok) throw new Error(`API error: ${response.status}`)
 
     const data = await response.json()

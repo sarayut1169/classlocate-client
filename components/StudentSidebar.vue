@@ -24,7 +24,7 @@
           <button class="siteLink menuBtn"><i class="fas fa-search"></i></button>
         </div>
         <div class="flex2 text-end d-none d-md-block">
-          <button class="siteLink logoutBtn">Logout</button>
+            <button class="siteLink logoutBtn" @click="logout">Logout</button>
         </div>
       </div>
     </div>
@@ -143,6 +143,17 @@ a.nav-menu-item:hover {
 
 <script setup>
 import { onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+
+function logout() {
+  const confirmed = window.confirm('คุณต้องการออกจากระบบใช่หรือไม่?')
+  if (confirmed) {
+    localStorage.removeItem('token')
+    router.push('/login')
+  }
+}
 
 onMounted(() => {
   const menuHolder = document.getElementById('menuHolder')

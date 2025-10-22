@@ -66,13 +66,9 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import Sidebar from '../components/StudentSidebar.vue'
+import { useRouter } from 'vue-router'
 
-definePageMeta({
-  middleware: ['auth']
-})
-
-
-
+const router = useRouter()
 const currentTime = ref('')
 const data = ref(null)
 const errorMessages = ref(null)
@@ -114,13 +110,20 @@ async function getCheckInData() {
     body: JSON.stringify({ accessToken, studentId, subjectInfoId }),
   })
 
+  if (response.status === 401) {
+    localStorage.removeItem('accessToken')
+    router.push('/login')
+    return
+  }
   const result = await response.json()
     if (result.errorMessages) {
       errorMessages.value = result.errorMessages
     if (
       errorMessages.value === 'ไม่สามารถเช็คอินได้ ยังไม่ถึงวันที่เรียน' ||
       errorMessages.value === 'ไม่สามารถเช็คอินได้ เวลาไม่ถูกต้อง' ||
-      errorMessages.value === 'ไม่สามารถเช็คอินได้ คุณขาดเรียน เนื่องจากไม่ได้เข้าเรียนตามเวลาที่กำหนด'
+      errorMessages.value === 'ไม่สามารถเช็คอินได้ คุณขาดเรียน เนื่องจากไม่ได้เข้าเรียนตามเวลาที่กำหนด' ||
+      errorMessages.value === 'ไม่สามารถเช็คอินได้ คุณได้ทำการลาแล้ว'
+
     ) {
     shouldHideCheckInButton.value = true
     }
@@ -129,7 +132,6 @@ async function getCheckInData() {
     }
 }
 
-// เช็คอิน
 async function checkIn() {
   const accessToken = localStorage.getItem('accessToken')
   const studentId = localStorage.getItem('studentId')
@@ -154,6 +156,12 @@ async function checkIn() {
         location: { latitude, longitude }
       }),
     })
+
+    if (response.status === 401) {
+      localStorage.removeItem('accessToken')
+      router.push('/login')
+      return
+    }
 
     if (!response.ok) throw new Error(`API error: ${response.status}`)
     const result = await response.json()

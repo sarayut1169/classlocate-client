@@ -7,7 +7,7 @@ export default defineEventHandler(async (event) => {
     return { error: 'Missing required fields' };
   }
 
-  const url = `https://localhost:7021/api/subject/delete-SubjectInfo/${id}`;
+  const url = `https://localhost:7021/api/subjectInfo/delete-SubjectInfo/${id}`;
   console.log("URL:", url);
 
   const response = await fetch(url, {

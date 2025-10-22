@@ -193,7 +193,10 @@ async function loadSubjectInfo() {
       },
       body: JSON.stringify({ subjectId: subjectId.value, accessToken: accessToken.value }),
     })
-
+    if(response.status === 401) {
+      router.push('/login')
+      return
+    }
     if (!response.ok) throw new Error(`API error: ${response.status}`)
 
     const data = await response.json()
@@ -223,7 +226,11 @@ async function saveStudentInfo() {
       },
       body: JSON.stringify(body),
     })
-
+    if(response.status === 401) {
+      localStorage.removeItem('accessToken')
+      router.push('/login')
+      return
+    }
     if (!response.ok) throw new Error('บันทึกข้อมูลไม่สําเร็จ')
 
     const updated = await response.json()
@@ -254,7 +261,11 @@ async function loadStudentInfo() {
       },
       body: JSON.stringify({ subjectId: subjectId.value, accessToken: accessToken.value }),
     })
-
+    if(response.status === 401) {
+      localStorage.removeItem('accessToken')
+      router.push('/login')
+      return
+    }
     if (!response.ok) throw new Error(`API error: ${response.status}`)
 
     const data = await response.json()
@@ -276,7 +287,6 @@ function editStudent(item) {
 
 function goToSeeData({id}) {
   sessionStorage.setItem('subjectInfoId', id)
-  // navigateTo('/class/classdata')
   router.push('/class/classdata')
 }
 

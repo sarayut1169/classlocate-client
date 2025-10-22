@@ -72,15 +72,10 @@
 <script setup>
 import { ref } from 'vue'
 import Sidebar from '../components/StudentSidebar.vue'
-
-definePageMeta({
-  middleware: ['auth']
-})
-
-
+import { useRouter } from 'vue-router'
 
 const data = ref(null)
-
+const router = useRouter()
 async function fetchTeacherData() {
   const studentId = localStorage.getItem('studentId')
   const accessToken = localStorage.getItem('accessToken')
@@ -99,7 +94,8 @@ async function fetchTeacherData() {
 
     if(response.status === 401) {
       localStorage.removeItem('accessToken')
-      navigateTo('/login')
+      router.push('/login')
+      return
     }
 
     data.value = await response.json()
@@ -109,11 +105,8 @@ async function fetchTeacherData() {
 }
 
 function viewSubject({ subjectId }) {
-  // เก็บค่าลง sessionStorage
   sessionStorage.setItem('subjectId', subjectId)
-
-  // ไปหน้า setsubject โดยไม่ส่ง query
-  navigateTo('/student/studentsubjectInfo')
+  router.push('/student/studentsubjectInfo')
 }
 onMounted(() => {
   fetchTeacherData()

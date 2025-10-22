@@ -29,9 +29,6 @@ const response = await fetch(url, {
   }),
   credentials: 'include',
 })
-
-  const data = await response.json()
-  console.log("DATA STUDENT INFO: ",data);
   
-  return data
+  return response
 })

@@ -50,7 +50,9 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import Sidebar from '../components/Sidebar.vue'
+import { useRouter } from 'vue-router'
 
+const router = useRouter()
 const subjectInfoId = ref(null)
 const accessToken = ref(null)
 const classData = ref(null)
@@ -84,14 +86,14 @@ async function loadSubjectInfo() {
         accessToken: accessToken.value,
       }),
     })
-
+    if (response.status === 401) {
+      localStorage.removeItem('accessToken')
+      router.push('/login')
+      return
+    }
     if (!response.ok) throw new Error(`API error: ${response.status}`)
 
     const data = await response.json()
-
-    console.log("DATAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",data);
-    
-
     if (data.isSuccess === false) {
       throw new Error(data.errorMessages || 'เกิดข้อผิดพลาดจาก API')
     }

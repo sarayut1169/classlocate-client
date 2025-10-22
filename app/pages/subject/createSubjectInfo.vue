@@ -67,16 +67,15 @@ const newSubjectInfo = ref({
   endCheckIn: '',
 })
 
-const days = ref([
-  'วันจันทร์',
-  'วันอังคาร',
-  'วันพุธ',
-  'วันพฤหัสบดี',
-  'วันศุกร์',
-  'วันเสาร์',
-  'วันอาทิตย์',
-])
-
+const days = {
+  1: 'วันจันทร์',
+  2: 'วันอังคาร',
+  3: 'วันพุธ',
+  4: 'วันพฤหัสบดี',
+  5: 'วันศุกร์',
+  6: 'วันเสาร์',
+  7: 'วันอาทิตย์',
+}
 async function saveNewSubjectInfo() {
   const subjectId = sessionStorage.getItem('subjectId')
   const accessToken = localStorage.getItem('accessToken')
@@ -103,7 +102,11 @@ async function saveNewSubjectInfo() {
         endCheckIn: newSubjectInfo.value.endCheckIn
       }),
     })
-
+    if(response.status === 401) {
+      localStorage.removeItem('accessToken')
+      router.push('/login')
+      return
+    }
     if (!response.ok) {
       throw new Error(`API error: ${response.status}`)
     }

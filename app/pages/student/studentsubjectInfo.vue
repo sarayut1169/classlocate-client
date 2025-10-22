@@ -69,12 +69,6 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-definePageMeta({
-  middleware: ['auth']
-})
-
-
-
 import Sidebar from '../components/StudentSidebar.vue'
 
 const router = useRouter()
@@ -116,6 +110,12 @@ async function loadSubjectInfo() {
       body: JSON.stringify({ subjectId: subjectId.value, accessToken: accessToken.value }),
     })
 
+    if(response.status === 401) {
+      localStorage.removeItem('accessToken')
+      router.push('/login')
+      return
+    }
+
     if (!response.ok) throw new Error(`API error: ${response.status}`)
 
     const data = await response.json()
@@ -128,13 +128,11 @@ async function loadSubjectInfo() {
 
 function checin({id}) {
   sessionStorage.setItem('subjectInfoId', id)
-  // navigateTo('/class/classdata')
   router.push('/student/studentcheckin')
 }
 
 function leave({id}) {
   sessionStorage.setItem('subjectInfoId', id)
-  // navigateTo('/class/classdata')
   router.push('/student/createleave')
 }
 

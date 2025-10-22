@@ -50,7 +50,9 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import Sidebar from '../components/Sidebar.vue'
+import { useRouter } from 'vue-router'
 
+const router = useRouter()
 const data = ref(null)
 const isEditing = ref(false)
 const editData = ref({
@@ -74,7 +76,11 @@ async function fetchTeacherData() {
       },
       body: JSON.stringify({ userId, accessToken }),
     })
-
+    if(response.status === 401) {
+      localStorage.removeItem('accessToken')
+      router.push('/login')
+      return
+    }
     if (!response.ok) throw new Error(`API error: ${response.status}`)
     data.value = await response.json()
   } catch (error) {
@@ -112,7 +118,11 @@ async function saveEdit() {
         }
       }),
     })
-
+    if(response.status === 401) {
+      localStorage.removeItem('accessToken')
+      router.push('/login')
+      return
+    }
     if (!response.ok) throw new Error(`API error: ${response.status}`)
 
     const result = await response.json()
@@ -125,7 +135,7 @@ async function saveEdit() {
 
 definePageMeta({
   layout: 'teacher',
-  middleware: ['auth'],
+  // middleware: ['auth'],
   title: 'ข้อมูลครู'
 })
 </script>

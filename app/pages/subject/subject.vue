@@ -73,9 +73,10 @@
 <script setup>
 import { ref } from 'vue'
 import Sidebar from '../components/Sidebar.vue'
+import { useRouter } from 'vue-router'
 
 const data = ref(null)
-
+const router = useRouter()
 async function fetchTeacherData() {
   const teacherId = localStorage.getItem('teacherId')
   const accessToken = localStorage.getItem('accessToken')
@@ -92,6 +93,12 @@ async function fetchTeacherData() {
       body: JSON.stringify({ teacherId, accessToken }),
     })
 
+    console.log("res:",response);
+    if(response.status === 401) {
+      localStorage.removeItem('accessToken')
+      router.push('/login')
+    }
+
     if (!response.ok) {
       const error = new Error(`API error: ${response.status}`)
       console.error('Failed to fetch teacher data:', error)
@@ -105,15 +112,11 @@ async function fetchTeacherData() {
 }
 
 function viewSubject({ subjectId }) {
-  // เก็บค่าลง sessionStorage
   sessionStorage.setItem('subjectId', subjectId)
-
-  // ไปหน้า setsubject โดยไม่ส่ง query
-  navigateTo('/subject/setsubject')
+  router.push('/subject/setsubject')
 }
 
 async function deleteSubject({ subjectId }) {
-  // เก็บค่าลง sessionStorage (ถ้าใช้ต่อ)
   const accessToken = localStorage.getItem('accessToken')
   const accept = window.confirm('คุณต้องการลบวิชานี้?')
   if (!accept) return
@@ -128,6 +131,10 @@ async function deleteSubject({ subjectId }) {
       body: JSON.stringify({ subjectId, accessToken }),
     })
 
+    if(response.status === 401) {
+      localStorage.removeItem('accessToken')
+      router.push('/login')
+    }
     if (!response.ok) {
       throw new Error(`ลบไม่สำเร็จ: ${response.status}`)
     }
@@ -140,14 +147,12 @@ async function deleteSubject({ subjectId }) {
     console.error('เกิดข้อผิดพลาดในการลบวิชา:', error)
     alert('❌ ลบวิชาไม่สำเร็จ กรุณาลองใหม่อีกครั้ง')
   }
-
   location.reload()
 }
 
 function createSubject() {
-  // ไปหน้า setsubject โดยไม่ส่ง subjectId
   sessionStorage.removeItem('subjectId') // ล้างค่าเก่า ถ้ามี
-  navigateTo('/subject/createsubject')
+  router.push('/subject/createsubject')
 }
 
 onMounted(() => {

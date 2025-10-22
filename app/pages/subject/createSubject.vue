@@ -63,7 +63,6 @@ async function saveNewSubject() {
     alert('ไม่พบข้อมูลผู้ใช้')
     return
   }
-
   try {
     const response = await fetch('/api/subject/subjectCreate/', {
       method: 'POST',
@@ -79,7 +78,11 @@ async function saveNewSubject() {
         location: newSubject.value.location,
       }),
     })
-
+    if (response.status === 401) {
+      localStorage.removeItem('accessToken')
+      router.push('/login')
+      return
+    }
     if (!response.ok) {
       throw new Error(`API error: ${response.status}`)
     }

@@ -61,10 +61,9 @@
 <script setup>
 import { ref } from 'vue'
 import Sidebar from '../components/Sidebar.vue'
-definePageMeta({
-  middleware: ['auth']
-})
+import { useRouter } from 'vue-router'
 const data = ref(null)
+const router = useRouter()
 
 async function fetchTeacherData() {
   const teacherId = localStorage.getItem('teacherId')
@@ -82,6 +81,11 @@ async function fetchTeacherData() {
       body: JSON.stringify({ teacherId, accessToken }),
     })
 
+    if(response.status === 401) {
+      localStorage.removeItem('accessToken')
+      router.push('/login')
+    }
+
     if (!response.ok) {
       const error = new Error(`API error: ${response.status}`)
       console.error('Failed to fetch teacher data:', error)
@@ -93,20 +97,10 @@ async function fetchTeacherData() {
     console.error('Failed to fetch teacher data:', error)
   }
 }
-
 function viewSubject({ subjectId }) {
-  // เก็บค่าลง sessionStorage
   sessionStorage.setItem('subjectId', subjectId)
-
-  // ไปหน้า setsubject โดยไม่ส่ง query
-  navigateTo('/class/classinfo')
+  router.push('/class/classinfo')
 }
-function createSubject() {
-  // ไปหน้า setsubject โดยไม่ส่ง subjectId
-  sessionStorage.removeItem('subjectId') // ล้างค่าเก่า ถ้ามี
-  navigateTo('/subject/createsubject')
-}
-
 onMounted(() => {
   fetchTeacherData()
 })

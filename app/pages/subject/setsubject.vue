@@ -88,7 +88,7 @@
           class="btn btn-success rounded-pill shadow-sm px-4"
             @click="createSubjectInfo"
           >
-            + สร้างวิชาใหม่
+            + เพิ่มวันเรียน
           </button>
             <table class="table table-bordered table-striped table-hover align-middle">
               <thead class="table-info text-center">
@@ -176,10 +176,12 @@
 <script setup>
 import Sidebar from '../components/Sidebar.vue'
 import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 
 // ตัวแปรพื้นฐาน
 const subjectId = ref(null)
 const accessToken = ref(null)
+const router = useRouter()
 const subjectData = ref(null)
 const subjectInfo = ref(null)
 
@@ -225,7 +227,11 @@ async function loadSubjectData() {
       },
       body: JSON.stringify({ id: subjectId.value, accessToken: accessToken.value }),
     })
-
+    if(response.status === 401) {
+      localStorage.removeItem('accessToken')
+      router.push('/login')
+      return
+    }
     if (!response.ok) throw new Error(`API error: ${response.status}`)
 
     subjectData.value = await response.json()
@@ -235,7 +241,6 @@ async function loadSubjectData() {
   }
 }
 
-// โหลดข้อมูลเวลาเรียน
 async function loadSubjectInfo() {
   try {
     const response = await fetch('/api/subject/subjectInfoBySubjectId/', {
@@ -246,7 +251,11 @@ async function loadSubjectInfo() {
       },
       body: JSON.stringify({ subjectId: subjectId.value, accessToken: accessToken.value }),
     })
-
+    if(response.status === 401) {
+      localStorage.removeItem('accessToken')
+      router.push('/login')
+      return
+    }
     if (!response.ok) throw new Error(`API error: ${response.status}`)
 
     const data = await response.json()
@@ -278,7 +287,11 @@ async function deleteSubjectInfo({ id }) {
       },
       body: JSON.stringify({ id: Number(id), accessToken }),
     });
-
+    if(response.status === 401) {
+      localStorage.removeItem('accessToken')
+      router.push('/login')
+      return
+    }
     if (!response.ok) {
       throw new Error(`ลบไม่สำเร็จ: ${response.status}`);
     }
@@ -325,7 +338,11 @@ async function saveChanges() {
         location: JSON.stringify(editData.value.location),
       }),
     })
-
+    if(response.status === 401) {
+      localStorage.removeItem('accessToken')
+      router.push('/login')
+      return
+    }
     if (!response.ok) throw new Error('บันทึกข้อมูลไม่สำเร็จ')
 
     const updated = await response.json()
@@ -335,20 +352,17 @@ async function saveChanges() {
     console.error('เกิดข้อผิดพลาดระหว่างบันทึก:', error)
   }
 }
-
-// แก้ไขเวลาเรียน
 function editSubjectInfo(item) {
   isEditingSubjectInfo.value = true
   editSubjectInfoData.value = { ...item }
 }
-
 function cancelSubjectInfoEdit() {
   isEditingSubjectInfo.value = false
 }
 
 function createSubjectInfo() {
 
-  navigateTo('/subject/createSubjectInfo')
+  router.push('/subject/createSubjectInfo')
 }
 
 async function saveSubjectInfoChanges() {
@@ -371,20 +385,19 @@ async function saveSubjectInfoChanges() {
       },
       body: JSON.stringify(body),
     })
+    if(response.status === 401) {
+      localStorage.removeItem('accessToken')
+      router.push('/login')
+      return
+    }
 
     if (!response.ok) throw new Error('บันทึกข้อมูลเวลาเรียนไม่สำเร็จ')
-
     const updated = await response.json()
-
-    // อัปเดตข้อมูลใน subjectInfo ทันที โดยไม่ต้อง reload
     const updatedItem = updated.resultData
-
-    // หา index ของข้อมูลที่แก้ใน subjectInfo
     const index = subjectInfo.value.findIndex(item => item.id === updatedItem.id)
     if (index !== -1) {
       subjectInfo.value[index] = { ...updatedItem }
     }
-
     isEditingSubjectInfo.value = false
   } catch (error) {
     console.error('เกิดข้อผิดพลาดระหว่างบันทึกเวลาเรียน:', error)
