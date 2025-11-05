@@ -1,5 +1,6 @@
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
+import {BASE_API_URL } from '../api/util/httputil.js'
 export default defineEventHandler(async (event) => {
   try {
     const method = event.req.method
@@ -14,7 +15,7 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    const url = `https://localhost:7021/api/user/login`
+    const url = BASE_API_URL + `/api/user/login`
 
     const response = await fetch(url, {
       method: 'POST',

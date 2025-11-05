@@ -1,5 +1,7 @@
 
 // api/subject/subjectInfoUpdate.ts
+import {BASE_API_URL } from '../util/httputil.js'
+
 export default defineEventHandler(async (event) => {
   const body = await readBody(event)
   console.log("BODY:",body);
@@ -12,8 +14,9 @@ export default defineEventHandler(async (event) => {
     return { error: 'Missing userId or accessToken' }
   }
 
-  const url = `https://localhost:7021/api/subjectInfo/update-SubjectInfo/`
-
+  const url = BASE_API_URL + `/api/subjectInfo/update-SubjectInfo/`
+  console.log(url);
+  
 const response = await fetch(url, {
   method: 'PUT',
   headers: {
@@ -31,6 +34,7 @@ const response = await fetch(url, {
   }),
   credentials: 'include',
 })
-
+  console.log("res",response);
+  
   return response
 })

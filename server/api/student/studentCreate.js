@@ -1,4 +1,6 @@
 // api/student/studentCreate.ts
+import {BASE_API_URL } from '../util/httputil.js'
+
 export default defineEventHandler(async (event) => {
   const body = await readBody(event)
   console.log("BODYDATA CREATE STUDENT:", body)
@@ -10,7 +12,7 @@ export default defineEventHandler(async (event) => {
     return { error: 'Missing required fields' }
   }
 
-  const url = `https://localhost:7021/api/studentdata/create-studentdata/`
+  const url = BASE_API_URL + `/api/studentdata/create-studentdata/`
 
   const response = await fetch(url, {
     method: 'POST',

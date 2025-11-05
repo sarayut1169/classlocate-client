@@ -99,7 +99,13 @@ async function loadSubjectInfo() {
     }
 
     classData.value = data.resultData
-    errorMessage.value = null // ✅ ล้าง error ถ้าโหลดสำเร็จ
+    if (data.isSuccess === false) {
+      errorMessage.value = data.errorMessages || 'เกิดข้อผิดพลาดจาก API'
+      return // ✅ ไม่ต้อง throw ซ้ำ
+    }
+
+    classData.value = data.resultData
+    errorMessage.value = null
   } catch (error) {
     console.error('โหลดข้อมูลไม่สำเร็จ:', error)
     classData.value = null

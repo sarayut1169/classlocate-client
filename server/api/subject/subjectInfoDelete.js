@@ -1,4 +1,6 @@
 // api/subject/subjectInfoDelete.ts
+import {BASE_API_URL } from '../util/httputil.js'
+
 export default defineEventHandler(async (event) => {
   const { id, accessToken } = await readBody(event);
   console.log("BODYDELETE:", { id, accessToken });
@@ -7,7 +9,7 @@ export default defineEventHandler(async (event) => {
     return { error: 'Missing required fields' };
   }
 
-  const url = `https://localhost:7021/api/subjectInfo/delete-SubjectInfo/${id}`;
+  const url = BASE_API_URL + `/api/subjectInfo/delete-SubjectInfo/${id}`;
   console.log("URL:", url);
 
   const response = await fetch(url, {

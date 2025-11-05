@@ -1,16 +1,20 @@
-// api/student/studentBySubjectId.ts
+// api/subject/subjectById.ts
+import {BASE_API_URL } from '../util/httputil.js'
+
+
 export default defineEventHandler(async (event) => {
   const body = await readBody(event)
   console.log("BODY:",body);
   
-  const subjectId = body.subjectId
+  const subjectInfoId = body.subjectInfoId
+  const studentId = body.studentId
   const accessToken = body.accessToken
 
-  if (!subjectId || !accessToken) {
+  if (!subjectInfoId || !accessToken) {
     return { error: 'Missing userId or accessToken' }
   }
 
-  const url = `https://localhost:7021/api/studentdata/get-all/${subjectId}`
+  const url = BASE_API_URL + `/api/checkin/get-checkin-by-studentid/${subjectInfoId}/${studentId}`
 
   const response = await fetch(url, {
     method: 'GET',
@@ -21,7 +25,6 @@ export default defineEventHandler(async (event) => {
     credentials: 'include',
   })
 
-
-
+  
   return response
 })

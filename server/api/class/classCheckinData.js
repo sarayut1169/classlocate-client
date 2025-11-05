@@ -1,17 +1,19 @@
-// api/teacherDataApi.js
-// api/teacherDataApi.js
+// api/subject/subjectById.ts
+import {BASE_API_URL } from '../util/httputil.js'
+
+
 export default defineEventHandler(async (event) => {
   const body = await readBody(event)
   console.log("BODY:",body);
   
-  const teacherId = body.teacherId
+  const subjectInfoId = body.subjectInfoId
   const accessToken = body.accessToken
 
-  if (!teacherId || !accessToken) {
+  if (!subjectInfoId || !accessToken) {
     return { error: 'Missing userId or accessToken' }
   }
 
-  const url = `https://localhost:7021/api/subject/get-all-by-teacher-id/${teacherId}`
+  const url = BASE_API_URL + `/api/checkin/get-checkin/${subjectInfoId}`
 
   const response = await fetch(url, {
     method: 'GET',

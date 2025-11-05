@@ -1,4 +1,6 @@
 // api/subject/subjectById.ts
+import {BASE_API_URL } from '../util/httputil.js'
+
 export default defineEventHandler(async (event) => {
   const body = await readBody(event)
   console.log("BODY:",body);
@@ -10,7 +12,7 @@ export default defineEventHandler(async (event) => {
     return { error: 'Missing userId or accessToken' }
   }
 
-  const url = `https://localhost:7021/api/subject/get-by-id/${id}`
+  const url = BASE_API_URL + `/api/subject/get-by-id/${id}`
 
   const response = await fetch(url, {
     method: 'GET',

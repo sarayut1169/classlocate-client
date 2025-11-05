@@ -1,20 +1,17 @@
-// api/subject/subjectUpdate.ts
+// api/subject/subjectCreate.ts
+import {BASE_API_URL } from '../util/httputil.js'
+
 export default defineEventHandler(async (event) => {
   const body = await readBody(event)
-  console.log("BODYDATA:", body)
+  console.log("BODYDATA CREATE SUBJECT:", body)
 
 
- const { id, name, teacherId, subjectCode, location, accessToken } = body
+ const { name, teacherId, subjectCode, location, accessToken } = body
 
-  if (!id || !accessToken) {
+  if (!accessToken) {
     return { error: 'Missing required fields' }
   }
-
-  // แปลง location array เป็น object
-    const raw = location;
-    const arr = JSON.parse(raw);
-    console.log("EIEIEIE",arr[0]); // "0,0"
-
+    const arr = location;
     const parsedLocation = {
       locationLeftUp: {
         latitude: parseFloat(arr[0].split(',')[0]),
@@ -38,17 +35,16 @@ export default defineEventHandler(async (event) => {
       console.log("PARSED LOCATION:",parsedLocation);
       
 
-  const url = `https://localhost:7021/api/subject/update-subject`
+  const url = BASE_API_URL + `/api/subject/create-subject`
 
   const response = await fetch(url, {
-    method: 'PUT',
+    method: 'POST',
     headers: {
       accept: '*/*',
       'Content-Type': 'application/json',
       Authorization: `Bearer ${accessToken}`,
     },
     body: JSON.stringify({
-      id,
       name,
       subjectCode,
       teacherId,
@@ -56,6 +52,8 @@ export default defineEventHandler(async (event) => {
     }),
     credentials: 'include',
   })
+
+
 
   return response
 })

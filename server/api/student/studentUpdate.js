@@ -1,4 +1,4 @@
-
+import {BASE_API_URL } from '../util/httputil.js'
 // api/student/studentUpdate.ts
 export default defineEventHandler(async (event) => {
   const body = await readBody(event)
@@ -12,7 +12,7 @@ export default defineEventHandler(async (event) => {
     return { error: 'Missing userId or accessToken' }
   }
 
-  const url = `https://localhost:7021/api/studentdata/update-studentdata/`
+  const url = BASE_API_URL + `/api/studentdata/update-studentdata/`
 
 const response = await fetch(url, {
   method: 'PUT',

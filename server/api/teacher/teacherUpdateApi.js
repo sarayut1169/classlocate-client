@@ -1,4 +1,7 @@
 // api/teacherUpdateApi.js
+
+import {BASE_API_URL } from '../../api/util/httputil.js'
+
 export default defineEventHandler(async (event) => {
   const body = await readBody(event)
   console.log("BODY:", body)
@@ -9,7 +12,7 @@ export default defineEventHandler(async (event) => {
     return { error: 'Missing required fields' }
   }
 
-  const url = `https://localhost:7021/api/teacher/update-teacher-info`
+  const url =BASE_API_URL+`/api/teacher/update-teacher-info`
 
   const response = await fetch(url, {
     method: 'PUT',
@@ -19,11 +22,11 @@ export default defineEventHandler(async (event) => {
       'Authorization': `Bearer ${accessToken}`,
     },
     body: JSON.stringify({
-      UserId: userId,
-      Name: updatedData.name,
-      Major: updatedData.major,
-      Position: updatedData.position,
-      History: updatedData.history,
+      userId: userId,
+      name: updatedData.name,
+      major: updatedData.major,
+      position: updatedData.position,
+      history: updatedData.history,
     }),
     credentials: 'include',
   })

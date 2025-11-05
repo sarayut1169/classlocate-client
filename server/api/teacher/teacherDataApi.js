@@ -1,5 +1,8 @@
 // api/teacherDataApi.js
 // api/teacherDataApi.js
+
+import {BASE_API_URL } from '../../api/util/httputil.js'
+
 export default defineEventHandler(async (event) => {
   const body = await readBody(event)
   console.log("BODY:",body);
@@ -11,7 +14,7 @@ export default defineEventHandler(async (event) => {
     return { error: 'Missing userId or accessToken' }
   }
 
-  const url = `https://localhost:7021/api/teacher/get-teacher-info/${userId}`
+  const url = BASE_API_URL + `/api/teacher/get-teacher-info/${userId}`
 
   const response = await fetch(url, {
     method: 'GET',

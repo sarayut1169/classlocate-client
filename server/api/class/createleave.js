@@ -1,29 +1,31 @@
-// api/registerstudent.ts
+// api/class/checkin.ts
+import {BASE_API_URL } from '../util/httputil.js'
+
+
 export default defineEventHandler(async (event) => {
   const body = await readBody(event)
   console.log("BODYDATA CREATE LEAVE:", body)
 
 
-  const {  email, password, telNo ,studentInfo} = body
-  const url = `https://localhost:7021/api/user/register-student/`
+  const { studentId, subjectInfoId, description, accessToken } = body
+  const url = BASE_API_URL + `/api/checkin/create-leave/`
 
   const response = await fetch(url, {
     method: 'POST',
     headers: {
       accept: '*/*',
       'Content-Type': 'application/json',
+      Authorization: `Bearer ${accessToken}`,
     },
     body: JSON.stringify({
-      email,
-      password,
-      telNo,
-      studentInfo
+      studentId,
+      subjectInfoId,
+      description,
     }),
     credentials: 'include',
   })
 
-  const data = await response.json()
-  console.log("DATA LEAVE:", data)
 
-  return data
+
+  return response
 })

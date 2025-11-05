@@ -1,11 +1,14 @@
 // api/class/checkin.ts
+import {BASE_API_URL } from '../util/httputil.js'
+
+
 export default defineEventHandler(async (event) => {
   const body = await readBody(event)
-  console.log("BODYDATA CREATE LEAVE:", body)
+  console.log("BODYDATA CREATE CHECKIN:", body)
 
 
-  const { studentId, subjectInfoId, description, accessToken } = body
-  const url = `https://localhost:7021/api/checkin/create-leave/`
+  const { studentId, subjectInfoId, location, accessToken } = body
+  const url =BASE_API_URL + `/api/checkin/create-checkin/`
 
   const response = await fetch(url, {
     method: 'POST',
@@ -17,11 +20,13 @@ export default defineEventHandler(async (event) => {
     body: JSON.stringify({
       studentId,
       subjectInfoId,
-      description,
+      location:{
+        latitude: location.latitude,
+        longitude: location.longitude
+      }
     }),
     credentials: 'include',
   })
-
 
 
   return response

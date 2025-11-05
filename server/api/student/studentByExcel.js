@@ -1,4 +1,6 @@
 // api/student/studentByExcel.ts
+import {BASE_API_URL } from '../util/httputil.js'
+
 export default defineEventHandler(async (event) => {
   const body = await readBody(event)
   console.log("BODYDATA CREATE STUDENT EXCEL:", body)
@@ -14,7 +16,7 @@ export default defineEventHandler(async (event) => {
   formData.append('file', excelFile.value)
   console.log("FORMDATA:", formData);
   
-  const url = `https://localhost:7021/api/studentdata/import-studentdata/${subjectId}`
+  const url = BASE_API_URL + `/api/studentdata/import-studentdata/${subjectId}`
   const response = await fetch(url, {
     method: 'POST',
     headers: {
